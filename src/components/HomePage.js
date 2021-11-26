@@ -3,7 +3,7 @@ import React from "react";
 function HomePage() {
     return (
         <div className="container">
-            <h1>Pluralsight</h1>
+            <h2>Pluralsight</h2>
             <p>React, flux and react</p>
         </div>
     )

@@ -4,9 +4,9 @@ import { NavLink } from "react-router-dom";
 function Header() {
     return (
         <nav>
-            <NavLink to="/" activeclassname="active">Home</NavLink> | 
-            <NavLink to="/about" activeclassname="active">About</NavLink> | 
-            <NavLink to="/courses" activeclassname="active">Course</NavLink>
+            <NavLink to="/" activeclassname="active">Home</NavLink> |  
+            <NavLink to="/courses" activeclassname="active">Course</NavLink> |
+            <NavLink to="/about" activeclassname="active">About</NavLink>
         </nav>
     )
 }
