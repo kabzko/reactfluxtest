@@ -25,7 +25,7 @@ function CourseForm(props) {
                         <option value="1">Cory House</option>
                         <option value="2">Scot Allen</option>
                     </select>
-                    <div class="invalid-feedback">
+                    <div className="invalid-feedback">
                         {props.errors.authorId}
                     </div>
                 </div>
