@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 function CourseList(props){
-    
+
     function renderRow() {
         return props.courses.map((course, index) => {
             return (
@@ -10,7 +10,7 @@ function CourseList(props){
                     <td>
                         <Link to={`/course/${course.slug}`}>{course.title}</Link>
                     </td>
-                    <td>{course.authorId}</td>
+                    <td>{course.authorName}</td>
                     <td>{course.category}</td>
                     <td>
                         <button 
