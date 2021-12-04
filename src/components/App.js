@@ -1,11 +1,11 @@
 import React from "react";
-import { Switch, Route } from "react-router-dom";
-import HomePage from "./home/HomePage";
-import AboutPage from "./home/AboutPage";
+import { Routes, Route } from "react-router-dom";
+import HomePage from "./HomePage";
+import AboutPage from "./AboutPage";
 import Header from "./common/Header";
-import CoursePage from "./courses/CoursesPage";
+import CoursePage from "./CoursesPage";
 import NotFoundPage from "./NotFoundPage";
-import ManageCoursePage from "./courses/ManageCoursePage";
+import ManageCoursePage from "./ManageCoursePage";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -15,14 +15,14 @@ function App() {
         <>
             <ToastContainer autoClose={3000} />
             <Header />
-            <Switch>
-                <Route path="/" exact component={HomePage} />
-                <Route path="/about" component={AboutPage} />
-                <Route path="/courses" component={CoursePage} />
-                <Route path="/course/:slug" component={ManageCoursePage} />
-                <Route path="/course/" component={ManageCoursePage} />
-                <Route component={NotFoundPage} />
-            </Switch>
+            <Routes>
+                <Route path="*" element={<NotFoundPage />} />
+                <Route path="/" exact element={<HomePage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/courses" element={<CoursePage />} />
+                <Route path="/course/:slug" element={<ManageCoursePage />} />
+                <Route path="/course/" element={<ManageCoursePage />} />
+            </Routes>
         </>
     )
 }

@@ -9,8 +9,7 @@ function TextInput(props) {
     return ( 
         <div className="mb-3">
             <label className="form-label" htmlFor={props.id}>{props.label}</label>
-            <input type="text" 
-                className={wrapperClase}
+            <input type="text" className={wrapperClase}
                 id={props.id} 
                 name={props.name} 
                 onChange={props.onChange} 
