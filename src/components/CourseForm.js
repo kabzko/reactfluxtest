@@ -1,41 +1,46 @@
 import React from "react";
 import TextInput from "./common/TextInput";
+import SelectInput from "./common/SelectInput";
 import PropTypes from "prop-types";
 
-function CourseForm(props) {
+function CourseForm({
+    onSubmit,
+    onChange,
+    course,
+    errors,
+    authors
+}) {
     return (
         <div className="container">
-            <form onSubmit={props.onSubmit}>
+            <form onSubmit={onSubmit}>
                 <TextInput
                     id="title"
                     name="title"
                     label="Title"
-                    onChange={props.onChange}
-                    value={props.course.title}
-                    error={props.errors.title}
+                    onChange={onChange}
+                    value={course.title}
+                    error={errors.title}
                 />
-                <div className="mb-3">
-                    <label className="form-label">Author</label>
-                    <select 
-                    className={props.errors.authorId ? "form-select is-invalid" : "form-select"} 
+                <SelectInput 
+                    id="authorId"
                     name="authorId"
-                    onChange={props.onChange} 
-                    value={props.course.authorId || ""}>
-                        <option value=""></option>
-                        <option value="1">Cory House</option>
-                        <option value="2">Scot Allen</option>
-                    </select>
-                    <div className="invalid-feedback">
-                        {props.errors.authorId}
-                    </div>
-                </div>
+                    label="Author"
+                    onChange={onChange}
+                    value={course.authorId || ""}
+                    defaultOption="Select Author"
+                    options={authors.map(author => ({
+                        value: author.id,
+                        text: author.name
+                    }))}
+                    error={errors.title}
+                />
                 <TextInput
                     id="category"
                     name="category"
                     label="Category"
-                    onChange={props.onChange}
-                    value={props.course.category}
-                    error={props.errors.category}
+                    onChange={onChange}
+                    value={course.category}
+                    error={errors.category}
                 />
                 <button type="submit" className="btn btn-primary">Submit</button>
             </form>

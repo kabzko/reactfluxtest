@@ -1,24 +1,24 @@
 import React, { useEffect } from "react";
 import CourseList from "../components/CourseList";
 import { Link } from "react-router-dom";
-import * as courseActions from "../redux/actions/courseActions";
-import * as authorActions from "../redux/actions/authorActions";
+import { loadCourses } from "../redux/actions/courseActions";
+import { loadAuthors } from "../redux/actions/authorActions";
 import { toast } from "react-toastify";
+import Spinner from "../components/common/Spinner";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { bindActionCreators } from "redux";
 
-function CoursePage(props) {
+function CoursePage({loadCourses, loadAuthors, courses, authors}) {
 
     useEffect(() => {
-        if (props.courses.length === 0) {
-            props.actions.loadCourses().catch(() => {
-                alert("Something went wrong. Please try again");
+        if (courses.length === 0) {
+            loadCourses().catch(() => {
+                console.log("Something went wrong. Please try again");
             })
         }
-        if (props.authors.length === 0) {
-            props.actions.loadAuthors().catch(() => {
-                alert("Something went wrong. Please try again");
+        if (authors.length === 0) {
+            loadAuthors().catch(() => {
+                console.log("Something went wrong. Please try again");
             })
         }
     }, [])
@@ -35,7 +35,8 @@ function CoursePage(props) {
             <Link className="btn btn-primary" to="/course">
                 Add Course
             </Link>
-            <CourseList courses={props.courses} deleteCourse={deleteSpecificCourse} />
+            <Spinner />
+            <CourseList courses={courses} deleteCourse={deleteSpecificCourse} />
         </div>
     )
 }
@@ -43,7 +44,8 @@ function CoursePage(props) {
 CourseList.propTypes = {
     authors: PropTypes.array.isRequired,
     courses: PropTypes.array.isRequired,
-    actions: PropTypes.func.isRequired,
+    loadCourses: PropTypes.func.isRequired,
+    loadAuthors: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {
@@ -61,13 +63,9 @@ function mapStateToProps(state) {
     }
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        actions: {
-            loadCourses: bindActionCreators(courseActions.loadCourses, dispatch),
-            loadAuthors: bindActionCreators(authorActions.loadAuthors, dispatch)
-        }
-    }
+const mapDispatchToProps = {
+    loadCourses,
+    loadAuthors
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CoursePage);

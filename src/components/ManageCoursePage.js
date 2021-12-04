@@ -1,33 +1,27 @@
 import React, { useState, useEffect } from "react";
 import CourseForm from "../components/CourseForm";
-import courseStore from "../stores/courseStore";
-import * as courseActions from "../redux/actions/courseActions";
-import { useParams, useNavigate } from "react-router-dom";
+import { loadCourses, saveCourse } from "../redux/actions/courseActions";
+import { loadAuthors } from "../redux/actions/authorActions";
 import { toast } from "react-toastify";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { bindActionCreators } from "redux";
 
-function ManageCoursePage(props) {
-    const { slug } = useParams();
-    const navigate = useNavigate();
-    const [courses, setCourses] = useState(courseStore.getCourses());
+function ManageCoursePage({courses, authors, loadCourses, loadAuthors, saveCourse, history, ...props}) {
     const [errors, setErrors] = useState({});
     const [course, setCourse] = useState({...props.course});
 
     useEffect(() => {
-        courseStore.addChangeListener(onChange);
         if (courses.length === 0) {
-            // courseActions.loadCourses();
-        } else if (slug) {
-            setCourse(courseStore.getCourseBySlug(slug));
+            loadCourses().catch(() => {
+                alert("Something went wrong. Please try again");
+            })
         }
-        return () => courseStore.removeChangeListener(onChange);
-    }, [courses.length, slug])
-
-    function onChange() {
-        setCourses(courseStore.getCourses());
-    }
+        if (authors.length === 0) {
+            loadAuthors().catch(() => {
+                alert("Something went wrong. Please try again");
+            })
+        }
+    }, [])
 
     function handleChange({target}) {
         const updatedCourse = {
@@ -49,9 +43,10 @@ function ManageCoursePage(props) {
     function handleSubmit(event) {
         event.preventDefault();
         if (!formIsValid()) return;
-        props.actions.saveCourse(course);
-        navigate('/courses');
-        toast.success("Course saved.")
+        saveCourse(course).then(() => {
+            history.push('/courses');
+            toast.success("Course saved.");
+        });
     }
 
     return (
@@ -59,6 +54,7 @@ function ManageCoursePage(props) {
             <CourseForm 
                 errors={errors}
                 course={course} 
+                authors={authors}
                 onChange={handleChange} 
                 onSubmit={handleSubmit} 
             />
@@ -67,23 +63,42 @@ function ManageCoursePage(props) {
 }
 
 ManageCoursePage.propTypes = {
-    actions: PropTypes.object.isRequired,
-    courses: PropTypes.array.isRequired
+    loadAuthors: PropTypes.func.isRequired,
+    loadCourses: PropTypes.func.isRequired,
+    saveCourse: PropTypes.func.isRequired,
+    course: PropTypes.object.isRequired,
+    courses: PropTypes.array.isRequired,
+    authors: PropTypes.array.isRequired,
+    history: PropTypes.object.isRequired
 };
 
-function mapStateToProps(state) {
+function getCourseBySlug(courses, slug) {
+    return courses.find(course => course.slug === slug) || null;
+}
+
+function mapStateToProps(state, ownProps) {
+    console.log(ownProps);
+    // const newCourse = {
+    //     id: null,
+    //     title: "",
+    //     authorId: null,
+    //     category: ""
+    // };
+    // const course = slug && state.courses.length > 0
+    // ? getCourseBySlug(state.courses, slug)
+    // : newCourse;
+    const course = [];
     return { 
-        courses: state.courses
+        course,
+        courses: state.courses,
+        authors: state.authors
     }
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        actions: {
-            saveCourse: bindActionCreators(courseActions.saveCourse, dispatch),
-            // loadCourseBySlug: bindActionCreators(ReduxcourseActions, dispatch),
-        }
-    }
+const mapDispatchToProps = {
+    loadAuthors,
+    loadCourses,
+    saveCourse,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ManageCoursePage);
