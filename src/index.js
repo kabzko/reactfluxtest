@@ -15,5 +15,5 @@ render(
             <App />
         </Router>
     </ReduxProvider>
-    , document.getElementById("root")
+    , document.getElementById("app")
 );

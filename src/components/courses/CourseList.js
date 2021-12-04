@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
 function CourseList(props){
@@ -31,7 +32,7 @@ function CourseList(props){
                                 <td>
                                     <button 
                                     className="btn btn-danger" 
-                                    onClick={() => props.deleteCourse(course.id)}
+                                    onClick={() => props.deleteCourse(course)}
                                     >Delete</button>
                                 </td>
                             </tr>
@@ -42,5 +43,10 @@ function CourseList(props){
         </table>
     )
 }
+
+CourseList.propTypes = {
+    courses: PropTypes.array.isRequired,
+    deleteCourse: PropTypes.func.isRequired
+};
 
 export default CourseList;

@@ -1,6 +1,6 @@
 import React from "react";
-import TextInput from "./common/TextInput";
-import SelectInput from "./common/SelectInput";
+import TextInput from "../common/TextInput";
+import SelectInput from "../common/SelectInput";
 import PropTypes from "prop-types";
 
 function CourseForm({
@@ -8,7 +8,8 @@ function CourseForm({
     onChange,
     course,
     errors,
-    authors
+    authors,
+    saving
 }) {
     return (
         <div className="container">
@@ -42,7 +43,9 @@ function CourseForm({
                     value={course.category}
                     error={errors.category}
                 />
-                <button type="submit" className="btn btn-primary">Submit</button>
+                <button type="submit" disabled={saving} className="btn btn-primary">
+                    {saving ? "Saving..." : "Save"}
+                </button>
             </form>
         </div>
     )

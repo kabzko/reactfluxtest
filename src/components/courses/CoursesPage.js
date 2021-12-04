@@ -1,14 +1,21 @@
 import React, { useEffect } from "react";
-import CourseList from "../components/CourseList";
 import { Link } from "react-router-dom";
-import { loadCourses } from "../redux/actions/courseActions";
-import { loadAuthors } from "../redux/actions/authorActions";
-import { toast } from "react-toastify";
-import Spinner from "../components/common/Spinner";
+import { loadCourses, deleteCourse } from "../../redux/actions/courseActions";
+import { loadAuthors } from "../../redux/actions/authorActions";
+import CourseList from "./CourseList";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import { toast } from "react-toastify";
+import Spinner from "../common/Spinner";
 
-function CoursePage({loadCourses, loadAuthors, courses, authors}) {
+function CoursePage({
+    loadCourses, 
+    loadAuthors, 
+    deleteCourse,
+    courses, 
+    authors, 
+    loading
+}) {
 
     useEffect(() => {
         if (courses.length === 0) {
@@ -23,29 +30,41 @@ function CoursePage({loadCourses, loadAuthors, courses, authors}) {
         }
     }, [])
 
-    function deleteSpecificCourse(id) {
-        // deleteCourse(id).then(() => {
-        //     toast.success("Course deleted.");
-        // })
+    const deleteSpecificCourse = async course => {
+        try {
+            await deleteCourse(course).then(() => {
+                toast.success("Course deleted.");
+            })
+        } catch (error) {
+            toast.error(`Delete failed. ${error.message}`, {autoClose: false});
+        }
     }
 
     return (
         <div className="container">
             <h2>Course Page</h2>
-            <Link className="btn btn-primary" to="/course">
-                Add Course
-            </Link>
-            <Spinner />
-            <CourseList courses={courses} deleteCourse={deleteSpecificCourse} />
+            {
+                loading 
+                ? <Spinner /> 
+                : 
+                <>
+                    <Link className="btn btn-primary" to="/course">
+                        Add Course
+                    </Link>
+                    <CourseList courses={courses} deleteCourse={deleteSpecificCourse} />
+                </>
+            }
         </div>
     )
 }
 
-CourseList.propTypes = {
+CoursePage.propTypes = {
     authors: PropTypes.array.isRequired,
     courses: PropTypes.array.isRequired,
     loadCourses: PropTypes.func.isRequired,
     loadAuthors: PropTypes.func.isRequired,
+    deleteCourse: PropTypes.func.isRequired,
+    loading: PropTypes.bool.isRequired,
 };
 
 function mapStateToProps(state) {
@@ -60,12 +79,14 @@ function mapStateToProps(state) {
                 }
             }),
         authors: state.authors,
+        loading: state.apiCallStatusReducer > 0
     }
 }
 
 const mapDispatchToProps = {
     loadCourses,
-    loadAuthors
+    loadAuthors,
+    deleteCourse
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CoursePage);
